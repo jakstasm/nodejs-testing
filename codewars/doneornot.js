@@ -16,13 +16,14 @@ function hasNumbersWithinRange(arr) {
 function allNumbersAreUnique(arr) {
   const mem = {};
   for (let i = 0; i < arr.length; i += 1) {
-    if (mem[i]) return false;
-    mem[i] = i;
+    const thisValue = arr[i];
+    if (mem[thisValue]) return false;
+    mem[thisValue] = true;
   }
   return true;
 }
 
-function arrCheck(arr) {
+function isValidNumberList(arr) {
   return (
     onlyHasNumbers(arr) &&
     hasNumbersWithinRange(arr) &&
@@ -33,7 +34,7 @@ function arrCheck(arr) {
 function hasValidRows(board) {
   for (let i = 0; i < board.length; i += 1) {
     const thisRow = board[i];
-    if (!arrCheck(thisRow)) return false;
+    if (!isValidNumberList(thisRow)) return false;
   }
   return true;
 }
@@ -41,7 +42,7 @@ function hasValidRows(board) {
 function hasValidColumns(board) {
   const columns = board.map((row, idx) => board.map((row) => row[idx]));
   for (let i = 0; i < columns.length; i += 1) {
-    if (!arrCheck(columns[i])) return false;
+    if (!isValidNumberList(columns[i])) return false;
   }
   return true;
 }
@@ -61,7 +62,7 @@ function getSudokuBox(board, boxIndex) {
 function hasValidBoxes(board) {
   const boxes = board.map((row, idx) => getSudokuBox(board, idx));
   for (let i = 0; i < boxes.length; i += 1) {
-    if (!arrCheck(boxes[i])) return false;
+    if (!isValidNumberList(boxes[i])) return false;
   }
   return true;
 }
@@ -74,12 +75,12 @@ function doneOrNot(board) {
 
 module.exports = {
   allNumbersAreUnique,
-  arrCheck,
   doneOrNot,
   getSudokuBox,
   hasNumbersWithinRange,
   hasValidBoxes,
   hasValidColumns,
   hasValidRows,
+  isValidNumberList,
   onlyHasNumbers,
 };

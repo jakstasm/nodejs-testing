@@ -1,12 +1,12 @@
 const {
   allNumbersAreUnique,
-  arrCheck,
   doneOrNot,
   getSudokuBox,
   hasNumbersWithinRange,
   hasValidBoxes,
   hasValidColumns,
   hasValidRows,
+  isValidNumberList,
   onlyHasNumbers,
 } = require("./doneornot");
 
@@ -18,6 +18,15 @@ describe("onlyHasNumbers", () => {
   });
   test("returns true if list only contains integers", () => {
     expect(onlyHasNumbers([1])).toEqual(true);
+  });
+});
+
+describe("allNumbersAreUnique", () => {
+  test("returns true when list only has unique numbers", () => {
+    expect(allNumbersAreUnique([1, 2, 3, 4, 5])).toEqual(true);
+  });
+  test("returns false when list only has duplicate numbers", () => {
+    expect(allNumbersAreUnique([5, 2, 3, 4, 5])).toEqual(false);
   });
 });
 
