@@ -5,44 +5,43 @@
  * If the board is valid return 'Finished!', otherwise return 'Try again!'
  */
 
-function onlyHasNumbers(arr) {
+function allElementsAreIntegers(arr) {
   return arr.every((el) => Number.isInteger(el));
 }
 
-function hasNumbersWithinRange(arr) {
-  return arr.every((el) => el > 0) && arr.every((el) => el < 10);
+function allNumbersAreInRange(arr) {
+  return arr.every((el) => el > 0 && el < 10);
 }
 
 function allNumbersAreUnique(arr) {
   const mem = {};
   for (let i = 0; i < arr.length; i += 1) {
     const thisValue = arr[i];
-    if (mem[thisValue]) return false;
+    if (mem[thisValue] !== undefined) return false;
     mem[thisValue] = true;
   }
   return true;
 }
 
-function isValidNumberList(arr) {
-  return (
-    onlyHasNumbers(arr) &&
-    hasNumbersWithinRange(arr) &&
-    allNumbersAreUnique(arr)
-  );
+function isValidSudokuNumberList(arr) {
+  return arr.length === 9
+    && allElementsAreIntegers(arr) 
+    && allNumbersAreInRange(arr) 
+    && allNumbersAreUnique(arr);
 }
 
 function hasValidRows(board) {
-  for (let i = 0; i < board.length; i += 1) {
+  for (let i = 0; i < 9; i += 1) {
     const thisRow = board[i];
-    if (!isValidNumberList(thisRow)) return false;
+    if (!isValidSudokuNumberList(thisRow)) return false;
   }
   return true;
 }
 
 function hasValidColumns(board) {
-  const columns = board.map((row, idx) => board.map((row) => row[idx]));
-  for (let i = 0; i < columns.length; i += 1) {
-    if (!isValidNumberList(columns[i])) return false;
+  for (let i = 0; i < 9; i += 1) {
+    const thisColumn = board.map((row) => row[i])
+    if (!isValidSudokuNumberList(thisColumn)) return false;
   }
   return true;
 }
@@ -60,13 +59,14 @@ function getSudokuBox(board, boxIndex) {
 }
 
 function hasValidBoxes(board) {
-  const boxes = board.map((row, idx) => getSudokuBox(board, idx));
-  for (let i = 0; i < boxes.length; i += 1) {
-    if (!isValidNumberList(boxes[i])) return false;
+  for (let i = 0; i < 9; i++) {
+    const thisBox = getSudokuBox(board, i);
+    if (!isValidSudokuNumberList(thisBox)) return false;
   }
   return true;
 }
 
+// Main function to use from this file:
 function doneOrNot(board) {
   return hasValidRows(board) && hasValidColumns(board) && hasValidBoxes(board)
     ? "Finished!"
@@ -74,13 +74,13 @@ function doneOrNot(board) {
 }
 
 module.exports = {
+  allElementsAreIntegers,
+  allNumbersAreInRange,
   allNumbersAreUnique,
   doneOrNot,
   getSudokuBox,
-  hasNumbersWithinRange,
   hasValidBoxes,
   hasValidColumns,
   hasValidRows,
-  isValidNumberList,
-  onlyHasNumbers,
+  isValidSudokuNumberList,
 };
