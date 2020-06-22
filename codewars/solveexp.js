@@ -1,93 +1,77 @@
-//Kata instructions: Given an expression, figure out the value of the rune represented by the question mark. If more than one digit works, give the lowest one. If no digit works, well, that's bad news for the professor - it means that he's got some of his runes wrong. output -1 in that case. Complete the method to solve the expression to find the value of the unknown rune. The method takes a string as a paramater repressenting the expression and will return an int value representing the unknown rune or -1 if no such rune exists.
+/*
+Kata instructions: Given an expression, figure out the value of the rune represented by the question mark. 
+If more than one digit works, give the lowest one. If no digit works, well, that's bad news for the professor - 
+it means that he's got some of his runes wrong. output -1 in that case. Complete the method to solve the 
+expression to find the value of the unknown rune. The method takes a string as a paramater repressenting 
+the expression and will return an int value representing the unknown rune or -1 if no such rune exists.
+*/
+function allDigitsInTwoArrays(a, b) {
+	return a.concat(b).filter((el) => parseInt(el));
+}
+
+function findOperatorIndex(array) {
+	for (let i = 0; i < array.length; i++) {
+		if (array[i] == '+' || array[i] == '*' || (array[i] == '-' && i !== 0 && array[i - 1] !== '-')) return i;
+	}
+}
+
+function operation(a, b, operator) {
+	if (operator == '*') return a * b;
+	if (operator == '+') return a + b;
+	if (operator == '-') return a - b;
+	if (operator == '/') return a / b;
+	if (operator == '%') return a % b;
+}
+
+function possibleDigitsForPlaceholder(array, placeholder) {
+	const possibilityArray = [];
+	for (let i = 0; i < 10; i++) {
+		let oneWay = array.map((el) => {
+			if (el == placeholder) return (el = i.toString());
+			else return el;
+		});
+		possibilityArray.push(oneWay);
+	}
+	return possibilityArray;
+}
+
+//eliminates 'numbers' starting with '0..' and/or '-0'
+function legitNumber(array) {
+	if (array.length > 1 && ((array[0] == '-' && array[1] == '0') || array[0] == '0')) return false;
+	else return true;
+}
+
+//where array elements are numbers as strings:
+function arrayToNum(array) {
+	return parseInt(array.reduce((a, b) => a + b));
+}
+
 function solveExpression(exp) {
-	let twoSides = exp.split('=');
-	let lSide = twoSides[0];
-	let rSide = twoSides[1].split('');
-	let opPos = [];
-	let opSymb = [];
-	let usedDigits = [];
+	const twoSides = exp.split('=');
+	const lSide = twoSides[0].split('');
+	const rSide = twoSides[1].split('');
+	const opIdx = findOperatorIndex(lSide);
+	const opSymbol = lSide[opIdx];
+	const usedDigits = allDigitsInTwoArrays(lSide, rSide);
 
-	//checking operator
-	//1. whether (*) and, if so, where
-	for (let i = 0; i < lSide.length; i++) {
-		lSide.split('');
-		if (lSide[i] === '*') {
-			opPos.push(i);
-			opSymb.push('*');
-		}
-		//2. whether (+) and, if so, where
-		if (lSide[i] === '+') {
-			opPos.push(i);
-			opSymb.push('+');
-		}
-		//3. whether (-) and, if so, where
-		if (lSide[i] === '-' && i !== 0 && (lSide[i - 1] !== '-' && lSide[i - 1] !== '*' && lSide[i - 1] !== '+')) {
-			opPos.push(i);
-			opSymb.push('-');
-		}
-	}
-
-	let lSideA = lSide.split('').slice(0, opPos);
-	let lSideB = lSide.split('').slice(opPos);
-	lSideB.shift();
-	usedDigits = [ ...new Set([ ...lSideA, ...lSideB, ...rSide ]) ];
-
-	function operation(a, b) {
-		if (opSymb == '*') return a * b;
-		if (opSymb == '+') return a + b;
-		if (opSymb == '-') return a - b;
-	}
+	const lSideA = lSide.slice(0, opIdx);
+	const lSideB = lSide.slice(opIdx + 1);
 
 	// create possibility arrays for each part of the equation
-	let lSBposs = [];
-	let lSAposs = [];
-	let rSposs = [];
-
-	for (let i = 0; i < 10; i++) {
-		let oneWayB = lSideB.map((el) => {
-			if (el === '?') {
-				return (el = i.toString());
-			} else {
-				return el;
-			}
-		});
-		lSBposs.push(oneWayB);
-		let oneWayA = lSideA.map((el) => {
-			if (el === '?') {
-				return (el = i.toString());
-			} else {
-				return el;
-			}
-		});
-		lSAposs.push(oneWayA);
-		let oneWayC = rSide.map((el) => {
-			if (el === '?') {
-				return (el = i.toString());
-			} else {
-				return el;
-			}
-		});
-		rSposs.push(oneWayC);
-	}
+	const lSBposs = possibleDigitsForPlaceholder(lSideB, '?');
+	const lSAposs = possibleDigitsForPlaceholder(lSideA, '?');
+	const rSposs = possibleDigitsForPlaceholder(rSide, '?');
 
 	for (let i = 0; i < 10; i++) {
 		if (
-			!(lSAposs[i].length > 1 && (lSAposs[i][0] == 0 && lSAposs[i][1] == 0)) &&
-			!(lSAposs[i].length > 1 && (lSAposs[i][0] == '-' && lSAposs[i][1] == 0)) &&
-			!(lSAposs[i].length > 1 && lSAposs[i][0] == 0) &&
-			!(lSBposs[i].length > 1 && (lSBposs[i][0] == 0 && lSBposs[i][1] == 0)) &&
-			!(lSBposs[i].length > 1 && (lSBposs[i][0] == '-' && lSBposs[i][1] == 0)) &&
-			!(lSBposs[i].length > 1 && lSBposs[i][0] == 0) &&
-			!(rSposs[i].length > 1 && (rSposs[i][0] === 0 && rSposs[i][1] == 0)) &&
-			!(rSposs[i].length > 1 && (rSposs[i][0] == '-' && rSposs[i][1] == 0)) &&
-			!(rSposs[i].length > 1 && rSposs[i][0] == 0) &&
-			operation(parseInt(lSAposs[i].reduce((a, b) => a + b)), parseInt(lSBposs[i].reduce((a, b) => a + b))) ===
-				parseInt(rSposs[i].reduce((a, b) => a + b)) &&
+			legitNumber(lSAposs[i]) &&
+			legitNumber(lSBposs[i]) &&
+			legitNumber(rSposs[i]) &&
+			operation(arrayToNum(lSAposs[i]), arrayToNum(lSBposs[i]), opSymbol) === arrayToNum(rSposs[i]) &&
 			!usedDigits.some((el) => el == i)
 		)
 			return i;
 	}
-
 	return -1;
 }
 module.exports = solveExpression;
