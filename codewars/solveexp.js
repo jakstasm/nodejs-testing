@@ -74,4 +74,12 @@ function solveExpression(exp) {
 	}
 	return -1;
 }
-module.exports = solveExpression;
+module.exports = {
+	solveExpression,
+	allDigitsInTwoArrays,
+	findOperatorIndex,
+	operation,
+	possibleDigitsForPlaceholder,
+	legitNumber,
+	arrayToNum
+};
