@@ -24,10 +24,12 @@ function allNumbersAreUnique(arr) {
 }
 
 function isValidSudokuNumberList(arr) {
-  return arr.length === 9
-    && allElementsAreIntegers(arr) 
-    && allNumbersAreInRange(arr) 
-    && allNumbersAreUnique(arr);
+  return (
+    arr.length === 9 &&
+    allElementsAreIntegers(arr) &&
+    allNumbersAreInRange(arr) &&
+    allNumbersAreUnique(arr)
+  );
 }
 
 function hasValidRows(board) {
@@ -40,7 +42,7 @@ function hasValidRows(board) {
 
 function hasValidColumns(board) {
   for (let i = 0; i < 9; i += 1) {
-    const thisColumn = board.map((row) => row[i])
+    const thisColumn = board.map((row) => row[i]);
     if (!isValidSudokuNumberList(thisColumn)) return false;
   }
   return true;
@@ -50,7 +52,7 @@ function getSudokuBox(board, boxIndex) {
   const firstColumnIdx = (boxIndex % 3) * 3;
   const firstRowIdx = Math.floor(boxIndex / 3) * 3;
   let box = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i += 1) {
     box = box.concat(
       board[firstRowIdx + i].slice(firstColumnIdx, firstColumnIdx + 3)
     );
@@ -59,7 +61,7 @@ function getSudokuBox(board, boxIndex) {
 }
 
 function hasValidBoxes(board) {
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 9; i += 1) {
     const thisBox = getSudokuBox(board, i);
     if (!isValidSudokuNumberList(thisBox)) return false;
   }
